@@ -12,14 +12,16 @@ import {
 
 export default function DrawDownChart({ data = [] }) {
   return (
-    <div className="h-40 mt-4">
+    <div className="h-40">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={data}
-          margin={{ top: 5, right: 20, left: -10, bottom: 5 }}
+          syncId="portfolioSync" // Use the same sync ID
+          margin={{ top: 10, right: 20, left: -10, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="Date" tick={{ fontSize: 12 }} />
+          <XAxis dataKey="Date" tick={{ fontSize: 12 }} />{" "}
+          {/* This axis will be visible */}
           <YAxis domain={[-60, 0]} tick={{ fontSize: 12 }} />
           <Tooltip />
           <defs>
