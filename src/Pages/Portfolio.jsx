@@ -1,6 +1,6 @@
 import excelUrl from "@/assets/historical_nav.xlsx?url";
-import DrawDownChart from "@/components/DrawDownChart";
-import EquityChart from "@/components/EquityChart";
+import DrawDownChart from "@/Components/DrawDownChart";
+import EquityChart from "@/Components/EquityChart";
 import PortfolioTable from "@/components/PortfolioTable";
 import { parseExcelUrl } from "@/utils/excelParser";
 import { useEffect, useState } from "react";
