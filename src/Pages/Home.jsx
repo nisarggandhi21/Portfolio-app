@@ -1,10 +1,7 @@
-// src/Pages/Home.jsx
-
-import BlogCard from "@/components/BlogCard";
-import blogData from "@/data/blogData.json"; // Your existing data source
+import BlogCard from "@/Components/BlogCard";
+import blogData from "@/data/blogData.json";
 import { ArrowUpRight } from "lucide-react";
 
-// The target UI has 6 posts, so we'll duplicate the data to fill the layout.
 const displayBlogData = [...blogData, ...blogData];
 
 export default function Home() {
