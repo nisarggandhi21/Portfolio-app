@@ -1,4 +1,3 @@
-// src/Components/PortfolioTable.jsx
 import React from "react";
 export default function PortfolioTable({ equity }) {
   if (!equity || equity.length === 0) return null;
@@ -6,7 +5,6 @@ export default function PortfolioTable({ equity }) {
   const last = equity[equity.length - 1];
   const first = equity[0];
 
-  // Helper to calculate % return over a window of days
   const calcReturn = (days) => {
     const startIdx = Math.max(0, equity.length - days);
     const start = equity[startIdx];
@@ -14,7 +12,6 @@ export default function PortfolioTable({ equity }) {
     return ((last.Cumulative / start.Cumulative - 1) * 100).toFixed(1);
   };
 
-  // Max drawdown calculation
   let peak = -Infinity;
   let maxDD = 0;
   equity.forEach((pt) => {
@@ -38,7 +35,6 @@ export default function PortfolioTable({ equity }) {
 
   const headers = ["NAME", ...Object.keys(metrics)];
 
-  // Helper to format cells with appropriate colors
   const formatCell = (value) => {
     const num = parseFloat(value);
     if (isNaN(num)) return <td className="px-3 py-2 border">{value}</td>;

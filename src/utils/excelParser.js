@@ -1,7 +1,5 @@
-// src/utils/excelParser.js
 import * as XLSX from "xlsx";
 
-/* ----- helper: detect header & normalize rows ----- */
 function normalizeRowsWithHeaderDetection(rows) {
   if (!Array.isArray(rows) || rows.length === 0) return [];
 
@@ -18,20 +16,17 @@ function normalizeRowsWithHeaderDetection(rows) {
   const containsPattern = (row, regex) =>
     row.some((c) => c != null && regex.test(String(c)));
 
-  // Preferred: row that mentions both date and nav-like header names
   let headerIdx = rows.findIndex(
     (row) =>
       containsPattern(row, /date/i) &&
       containsPattern(row, /nav|close|value|price/i)
   );
 
-  // If not found, find a data-like row (contains a date-like cell) and use the previous row as header
   if (headerIdx === -1) {
     const dataRowIdx = rows.findIndex((row) => row.some((c) => isDateLike(c)));
     if (dataRowIdx > 0) headerIdx = dataRowIdx - 1;
   }
 
-  // Looser fallback: first row with >= 2 non-empty cells
   if (headerIdx === -1) {
     headerIdx = rows.findIndex(
       (row) =>
@@ -39,7 +34,6 @@ function normalizeRowsWithHeaderDetection(rows) {
     );
   }
 
-  // If no header found, give up
   if (headerIdx === -1 || headerIdx >= rows.length - 1) return [];
 
   const headerRow = rows[headerIdx].map((h, i) => {
@@ -66,13 +60,11 @@ function normalizeRowsWithHeaderDetection(rows) {
   return result;
 }
 
-/* ----- parse workbook array (Uint8Array) ----- */
 function parseWorkbookDataArray(dataArray) {
   const workbook = XLSX.read(dataArray, { type: "array" });
   const firstSheetName = workbook.SheetNames[0];
   const worksheet = workbook.Sheets[firstSheetName];
 
-  // get raw 2D rows for header detection
   const rawRows = XLSX.utils.sheet_to_json(worksheet, {
     header: 1,
     defval: null,
@@ -80,12 +72,10 @@ function parseWorkbookDataArray(dataArray) {
   const normalized = normalizeRowsWithHeaderDetection(rawRows);
   if (normalized.length > 0) return normalized;
 
-  // fallback: use sheet_to_json with first row as header
   const fallback = XLSX.utils.sheet_to_json(worksheet, { defval: null });
   return fallback;
 }
 
-/* ----- export: parse from File (input) ----- */
 export async function parseExcelFile(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -104,7 +94,6 @@ export async function parseExcelFile(file) {
   });
 }
 
-/* ----- export: parse from URL (Vite ?url or public/) ----- */
 export async function parseExcelUrl(excelUrl) {
   const res = await fetch(excelUrl);
   if (!res.ok) throw new Error(`Failed to fetch ${excelUrl} - ${res.status}`);

@@ -1,5 +1,3 @@
-// src/Components/DrawDownChart.jsx
-
 import {
   Area,
   AreaChart,

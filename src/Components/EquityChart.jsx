@@ -1,5 +1,3 @@
-// src/Components/EquityChart.jsx
-
 import {
   CartesianGrid,
   Line,
