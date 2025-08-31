@@ -1,4 +1,4 @@
-import Sidebar from "@/Components/Sidebar";
+import SideBar from "@/Components/SideBar";
 import Home from "@/Pages/Home";
 import Portfolio from "@/Pages/Portfolio";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
@@ -7,7 +7,7 @@ export default function App() {
   return (
     <Router>
       <div className="flex">
-        <Sidebar />
+        <SideBar />
         <div className="app-content w-full min-h-screen">
           <Routes>
             <Route path="/" element={<Home />} />
