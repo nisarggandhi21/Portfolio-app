@@ -1,3 +1,5 @@
+// src/Components/EquityChart.jsx
+
 import {
   CartesianGrid,
   Line,
@@ -10,18 +12,20 @@ import {
 
 export default function EquityChart({ data = [] }) {
   return (
-    <div className="card h-80">
-      <h4 className="font-semibold mb-4">Equity curve</h4>
-      <ResponsiveContainer width="100%" height="80%">
-        <LineChart data={data}>
+    <div className="h-64">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart
+          data={data}
+          margin={{ top: 5, right: 20, left: -10, bottom: 5 }}
+        >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="Date" tick={{ fontSize: 12 }} />
-          <YAxis />
+          <YAxis domain={["dataMin", "dataMax"]} tick={{ fontSize: 12 }} />
           <Tooltip />
           <Line
             type="monotone"
             dataKey="Cumulative"
-            stroke="#16a34a"
+            stroke="#22c55e"
             strokeWidth={2}
             dot={false}
           />

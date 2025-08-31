@@ -1,34 +1,20 @@
-// src/components/TrailingReturnsTable.jsx
-
-export default function TrailingReturnsTable({ equity }) {
+// src/Components/PortfolioTable.jsx
+import React from "react";
+export default function PortfolioTable({ equity }) {
   if (!equity || equity.length === 0) return null;
 
   const last = equity[equity.length - 1];
   const first = equity[0];
 
-  // helper to calc % return over window (days)
-  function calcReturn(days) {
-    const end = equity[equity.length - 1];
-    const startIdx = equity.length - days;
-    if (startIdx < 0) return null;
+  // Helper to calculate % return over a window of days
+  const calcReturn = (days) => {
+    const startIdx = Math.max(0, equity.length - days);
     const start = equity[startIdx];
-    return ((end.Cumulative / start.Cumulative - 1) * 100).toFixed(2);
-  }
-
-  // metrics
-  const metrics = {
-    YTD: calcReturn(252), // approx 1y
-    "1D": calcReturn(1),
-    "1W": calcReturn(5),
-    "1M": calcReturn(21),
-    "3M": calcReturn(63),
-    "6M": calcReturn(126),
-    "1Y": calcReturn(252),
-    "3Y": calcReturn(756),
-    SI: ((last.Cumulative / first.Cumulative - 1) * 100).toFixed(2),
+    if (!start || !last) return "N/A";
+    return ((last.Cumulative / start.Cumulative - 1) * 100).toFixed(1);
   };
 
-  // max drawdown
+  // Max drawdown calculation
   let peak = -Infinity;
   let maxDD = 0;
   equity.forEach((pt) => {
@@ -37,35 +23,56 @@ export default function TrailingReturnsTable({ equity }) {
     maxDD = Math.min(maxDD, dd);
   });
 
+  const metrics = {
+    YTD: calcReturn(252),
+    "1D": calcReturn(1),
+    "1W": calcReturn(5),
+    "1M": calcReturn(21),
+    "3M": calcReturn(63),
+    "6M": calcReturn(126),
+    "1Y": calcReturn(252),
+    SI: ((last.Cumulative / first.Cumulative - 1) * 100).toFixed(1),
+    DD: last.Drawdown.toFixed(1),
+    MAXDD: (maxDD * 100).toFixed(1),
+  };
+
+  const headers = ["NAME", ...Object.keys(metrics)];
+
+  // Helper to format cells with appropriate colors
+  const formatCell = (value) => {
+    const num = parseFloat(value);
+    if (isNaN(num)) return <td className="px-3 py-2 border">{value}</td>;
+
+    const colorClass = num >= 0 ? "text-green-600" : "text-red-600";
+    return (
+      <td className={`px-3 py-2 border font-medium ${colorClass}`}>{value}%</td>
+    );
+  };
+
   return (
-    <div className="overflow-x-auto mb-6">
+    <div className="overflow-x-auto bg-white rounded-2xl shadow-sm p-6">
       <h3 className="text-lg font-semibold mb-2">Trailing Returns</h3>
       <table className="min-w-full border text-sm text-center">
         <thead>
           <tr className="bg-gray-100">
-            {Object.keys(metrics).map((k) => (
-              <th key={k} className="px-3 py-2 border">
+            {headers.map((k) => (
+              <th
+                key={k}
+                className="px-3 py-2 border font-medium text-gray-600"
+              >
                 {k}
               </th>
             ))}
-            <th className="px-3 py-2 border">MAXDD</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            {Object.values(metrics).map((v, i) => (
-              <td
-                key={i}
-                className={`px-3 py-2 border ${
-                  v >= 0 ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {v}%
-              </td>
-            ))}
-            <td className="px-3 py-2 border text-red-600">
-              {(maxDD * 100).toFixed(2)}%
+            <td className="px-3 py-2 border text-left font-semibold">
+              QUANT ACTIVE
             </td>
+            {Object.values(metrics).map((value, i) => (
+              <React.Fragment key={i}>{formatCell(value)}</React.Fragment>
+            ))}
           </tr>
         </tbody>
       </table>
